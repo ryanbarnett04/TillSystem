@@ -31,8 +31,6 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 		"TYPE TEXT NOT NULL, "
 		"SIZE TEXT);");
 
-	wxMessageBox(db.fetchUsers(), "Popup", wxOK | wxICON_INFORMATION);
-
 	// Main Panel
 	wxPanel* mainPanel = new wxPanel(this);
 	mainPanel->SetBackgroundColour(wxColour(60, 0, 8));
@@ -101,7 +99,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	receipts = createButton(primary_screen_page_homescreen, wxID_ANY, "Receipts", { (screenWidth/2)-350, (screenHeight/2)+10}, {400, 200}, {0, 0, 0}, {255, 255, 255}, &MainFrame::Receipts);
 
 	// Primary Screen / Page 2 - Hot Drinks
-	primary_screen_page_hot_drinks = new wxPanel(primary_screen);
+	wxPanel* primary_screen_page_hot_drinks = new wxPanel(primary_screen);
 	americano_blackSML = createButton(primary_screen_page_hot_drinks, 1000, "Americano SML", {75, 60}, {180, 40}, {255, 255, 255}, {0, 0, 0}, &MainFrame::addToOrder);
 	americano_blackMED = createButton(primary_screen_page_hot_drinks, 1001, "Americano MED", {285, 60}, {180, 40}, {255, 255, 255}, {0, 0, 0}, &MainFrame::addToOrder);
 	americano_blackLRG = createButton(primary_screen_page_hot_drinks, 1002, "Americano LRG", {495, 60}, {180, 40}, {255, 255, 255}, {0, 0, 0}, &MainFrame::addToOrder);
@@ -221,6 +219,14 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	numberLabel->SetForegroundColour(*colour);
 	numberField->SetFont(textCtrlFont);
 
+	// Primary Screen - Page 10 - Receipts Page
+	wxPanel* primary_screen_page_receipts = new wxPanel(primary_screen);
+	receiptsLabel = new wxStaticText(primary_screen_page_receipts, wxID_ANY, "Receipts:", wxPoint( (screenWidth / 2) - 400, 20), wxSize(500, 30));
+	receiptsLabel->SetFont(*new wxFont(22, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+	receiptsLabel->SetForegroundColour(*new wxColour(255, 255, 255));
+
+	wxArrayString* wxAS_receipt = new wxArrayString();
+	wxListBox* receipt_box = new wxListBox(primary_screen_page_receipts, wxID_ANY, wxPoint( (screenWidth / 2) - 400, 60), wxSize(500, 600), *wxAS_receipt); 
 
 	/*
 		PAGES FOR THE RIGHTHAND
@@ -284,6 +290,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	primary_screen->AddPage(primary_screen_page_prepackaged_drinks, "Prepackaged Drinks");
 	primary_screen->AddPage(primary_screen_page_breakfast_food, "Breakfast Food");
 	primary_screen->AddPage(primary_screen_page_sign_in, "Sign In");
+	primary_screen->AddPage(primary_screen_page_receipts, "Receipts");
 
 	righthand->AddPage(righthand_page_empty, "Empty");
 	righthand->AddPage(righthand_page_orderlist, "Order List");
@@ -347,16 +354,10 @@ void MainFrame::ChangeLocation(wxCommandEvent& event) {
 	if (location == 1) {
 		location = 0;
 		change_location->SetLabel("Go to EI");
-		display_items->RemoveAt(0);
-		display_items->Insert("Take Away:", 0, 1);
-		listbox->Set(*display_items);
 	}
 	else {
 		location = 1;
 		change_location->SetLabel("Go to TA");
-		display_items->RemoveAt(0);
-		display_items->Insert("Eat In:", 0, 1);
-		listbox->Set(*display_items);
 	}
 }
 
@@ -375,7 +376,16 @@ void MainFrame::Homescreen(wxCommandEvent& event) {
 */
 
 void MainFrame::Receipts(wxCommandEvent& event) {
-	// Receipts not implemented yet
+
+	if (signedInName == "") {
+		wxMessageBox("Must have staff member signed in", "Popup", wxOK | wxICON_INFORMATION);
+		return;
+	}
+
+	primary_screen->SetSelection(9);
+	bottom_band->SetSelection(0);
+	order_top_band->SetSelection(2);
+	order_side_tabs->SetSelection(0);
 }
 
 
@@ -444,8 +454,14 @@ void MainFrame::addToOrder(wxCommandEvent& event) {
 		item.setSize(size);
 	}
 
+	std::string loc = "";
+	if (location == 1) {
+		loc = "EI";
+	}
+	else { loc = "TA"; }
+
 	order.addItem(item);
-	display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + size);
+	display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + size + " " + loc);
 	listbox->Set(*display_items);
 
 	if (item_corrected == true) {
@@ -516,7 +532,10 @@ void MainFrame::signUserIn(wxCommandEvent& event) {
 }
 
 void MainFrame::signUserOut(wxCommandEvent& event) {
-	// TO BE IMPLEMENTED
+	signedInName = "";
+	signedInNumber = NULL;
+	signedInRole = "";
+	employee->SetLabel("No staff signed in");
 }
 
 

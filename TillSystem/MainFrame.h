@@ -12,7 +12,7 @@ public:
 
 private:
 
-    int location = NULL;
+    int location = NULL; // 1 = Sit In, 0 = Take Away
     bool item_corrected;
     Order order;
     wxButton* temp_button;
@@ -27,9 +27,6 @@ private:
     wxSimplebook* primary_screen;
     wxSimplebook* righthand;
     wxSimplebook* bottom_band;
-
-    // Pages
-    wxPanel* primary_screen_page_hot_drinks;
 
     // Primary Screen - Homepage
     wxButton* sit_in;
@@ -137,6 +134,9 @@ private:
     wxStaticText* numberLabel;
     wxTextCtrl* numberField;
     wxButton* signInButton;
+
+    // Primary Screen - Receipts
+    wxStaticText* receiptsLabel;
 
     // Order Top Band - Navigation
     wxButton* change_location;

@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore the sqlite folder inside the TillSystem project
+TillSystem/sqlite/

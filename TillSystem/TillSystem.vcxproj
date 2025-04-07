@@ -27,14 +27,14 @@
     <ClInclude Include="ProductMap.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Desktop\sqlite\shell.c" />
+    <ClCompile Include="..\..\..\..\Desktop\sqlite\sqlite3.c" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="MainFrame.cpp" />
     <ClCompile Include="Order.cpp" />
     <ClCompile Include="ProductMap.cpp" />
-    <ClCompile Include="sqlite\shell.c" />
-    <ClCompile Include="sqlite\sqlite3.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
