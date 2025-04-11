@@ -2,6 +2,9 @@
 #include <iostream>
 
 // Constructor implementation
+
+Item::Item() : name(""), price(0.0f), type("") {}
+
 Item::Item(const std::string& itemName, float itemPrice, const std::string& itemType)
     : name(itemName), price(itemPrice), type(itemType) {}
 

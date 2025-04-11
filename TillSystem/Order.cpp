@@ -38,3 +38,11 @@ std::string Order::printFirst() const {
     std::string printFirst = firstItem.toString();
     return printFirst;
 }
+
+int Order::getSize() {
+    return items.size();
+}
+
+float Order::getItemPrice(int index) {
+    return items[index].getPrice();
+}

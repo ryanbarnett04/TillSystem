@@ -12,6 +12,8 @@ public:
     void clearOrder();
     std::string printOrder() const;
     std::string printFirst() const;
+    int getSize();
+    float getItemPrice(int index);
 
 private:
     std::vector<Item> items;

@@ -12,6 +12,7 @@ public:
 
 private:
 
+    // Global Variables
     int location = NULL; // 1 = Sit In, 0 = Take Away
     bool item_corrected;
     Order order;
@@ -20,6 +21,10 @@ private:
     std::string signedInName;
     int signedInNumber;
     std::string signedInRole;
+    float orderCurrentPrice = NULL;
+    Item recentItem;
+    int addQuantity = 1;
+    bool onPaymentScreen = false;
 
     // Simple books
     wxSimplebook* order_top_band;
@@ -180,10 +185,35 @@ private:
     // Bottom Band - Homescreen Bottom Bar
     wxStaticText* employee;
 
-    // Righthand
+    // Righthand - Order List
     wxListBox* listbox;
     wxButton* itemCorrect;
     wxButton* voidOrder;
+    wxButton* selectQuantity;
+    wxTextCtrl* inputQuantity;
+    wxButton* goToPayment;
+    wxStaticText* currentPriceLabel;
+
+    // Righthand - Payment Screen
+    wxListBox* paymentListbox;
+    wxButton* payCash;
+    wxButton* payCard;
+    wxButton* payGiftCard;
+    wxStaticText* orderTotal;
+    wxTextCtrl* cashLabel;
+    wxButton* one;
+    wxButton* two;
+    wxButton* three;
+    wxButton* four;
+    wxButton* five;
+    wxButton* six;
+    wxButton* seven;
+    wxButton* eight;
+    wxButton* nine;
+    wxButton* zero;
+    wxButton* clear;
+    wxButton* backToSales;
+    wxButton* decimal_char;
 
     // Navigation
     void SitIn(wxCommandEvent& evt);
@@ -201,6 +231,8 @@ private:
     void PrepackagedDrinks(wxCommandEvent& evt);
     void BreakfastFood(wxCommandEvent& evt);
     void Homescreen(wxCommandEvent& evt);
+    void SelectItemQuantity(wxCommandEvent& evt);
+    void GoToPayment(wxCommandEvent& evt);
 
     // Items
     void addToOrder(wxCommandEvent& evt);
@@ -212,6 +244,9 @@ private:
     void signUserIn(wxCommandEvent& evt);
     void signUserOut(wxCommandEvent& evt);
     void GoHome();
+
+    // Num Pad
+    void NumpadButtons(wxCommandEvent& evt);
 
     wxButton* createButton(wxPanel* panel, int id, std::string name, std::tuple<int, int> pos, std::tuple<int, int> size, std::tuple<int, int, int> foreground, std::tuple<int, int, int> background, void (MainFrame::* handler)(wxCommandEvent&));
 };

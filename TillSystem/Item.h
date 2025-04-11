@@ -6,6 +6,7 @@ class Item {
 public:
 
     // Constructor
+    Item();
     Item(const std::string& itemName, float itemPrice, const std::string& itemType);
 
     // Setters
