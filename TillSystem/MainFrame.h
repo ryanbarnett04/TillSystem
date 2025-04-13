@@ -231,8 +231,8 @@ private:
     void PrepackagedDrinks(wxCommandEvent& evt);
     void BreakfastFood(wxCommandEvent& evt);
     void Homescreen(wxCommandEvent& evt);
-    void SelectItemQuantity(wxCommandEvent& evt);
     void GoToPayment(wxCommandEvent& evt);
+    void BackToSales(wxCommandEvent& evt);
 
     // Items
     void addToOrder(wxCommandEvent& evt);
@@ -243,6 +243,8 @@ private:
     void placeholder(wxCommandEvent& evt);
     void signUserIn(wxCommandEvent& evt);
     void signUserOut(wxCommandEvent& evt);
+    void SelectItemQuantity(wxCommandEvent& evt);
+    void CheckCash(wxCommandEvent& evt);
     void GoHome();
 
     // Num Pad

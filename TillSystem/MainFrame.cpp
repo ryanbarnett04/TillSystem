@@ -254,9 +254,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	// Righthand / Page 3 - Payment Screen
 	wxPanel* righthand_page_payment = new wxPanel(righthand);
 	paymentListbox = new wxListBox(righthand_page_payment, wxID_ANY, wxPoint(0, 60), wxSize(500, 300), *display_items, wxLB_SINGLE);
-	backToSales = createButton(righthand_page_payment, wxID_ANY, "Back To Sales", {0, 370}, {245, 40}, {0, 0, 0}, {255, 255, 255}, &MainFrame::placeholder);
+	backToSales = createButton(righthand_page_payment, wxID_ANY, "Back To Sales", {0, 370}, {245, 40}, {0, 0, 0}, {255, 255, 255}, &MainFrame::BackToSales);
 	payCard = createButton(righthand_page_payment, wxID_ANY, "Card", {255, 370}, {245, 40}, {0, 0, 0}, {255, 255, 255}, &MainFrame::placeholder);
-	payCash = createButton(righthand_page_payment, wxID_ANY, "Cash", {0, 420}, {245, 40}, {0, 0, 0}, {255, 255, 255}, &MainFrame::placeholder);
+	payCash = createButton(righthand_page_payment, wxID_ANY, "Cash", {0, 420}, {245, 40}, {0, 0, 0}, {255, 255, 255}, &MainFrame::CheckCash);
 	payGiftCard = createButton(righthand_page_payment, wxID_ANY, "Gift Card", {255, 420}, {245, 40}, {0, 0, 0}, {255, 255, 255}, &MainFrame::placeholder);
 	cashLabel = new wxTextCtrl(righthand_page_payment, wxID_ANY, "£", wxPoint(0, 470), wxSize(500, 40));
 	one = createButton(righthand_page_payment, 1, "1", {0, 520}, {60, 60}, {0, 0, 0}, {255, 255, 255}, &MainFrame::NumpadButtons);
@@ -271,6 +271,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	eight = createButton(righthand_page_payment, 8, "8", {70, 660}, {60, 60}, {0, 0, 0}, {255, 255, 255}, &MainFrame::NumpadButtons);
 	nine = createButton(righthand_page_payment, 9, "9", {140, 660}, {60, 60}, {0, 0, 0}, {255, 255, 255}, &MainFrame::NumpadButtons);
 	zero = createButton(righthand_page_payment, 0, "0", {210, 660}, {60, 60}, {0, 0, 0}, {255, 255, 255}, &MainFrame::NumpadButtons);
+
+	cashLabel->SetFont(*new wxFont(22, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 
 	/*
 		PAGES FOR BOTTOM BAND
@@ -476,39 +478,16 @@ void MainFrame::BreakfastFood(wxCommandEvent& event) {
 	primary_screen->SetSelection(7);
 }
 
-void MainFrame::SelectItemQuantity(wxCommandEvent& event) {
-
-	std::string num_str = inputQuantity->GetValue().ToStdString();
-	unsigned int num;
-	
-	try {
-		int result = stoi(num_str);
-		if (result < 0) {
-			wxMessageBox("Error: Please enter a positive number!");
-			return;
-		}
-		num = result;
-	}
-	catch (const std::invalid_argument& e) {
-		wxMessageBox("Error: Please enter an integer!");
-		return;
-	}
-
-	if (num == 0) {
-		addQuantity = 1;
-	}
-	else {
-		addQuantity = num;
-	}
-
-	inputQuantity->SetLabelText("");
-}
-
 void MainFrame::GoToPayment(wxCommandEvent& event) {
 	
 	onPaymentScreen = true;
 	paymentListbox->Set(*display_items);
 	righthand->SetSelection(2);
+}
+
+void MainFrame::BackToSales(wxCommandEvent& event) {
+	righthand->SetSelection(1);
+	onPaymentScreen = false;
 }
 
 
@@ -541,7 +520,15 @@ void MainFrame::addToOrder(wxCommandEvent& event) {
 
 	for (int i = 0; i < addQuantity; i++) {
 		order.addItem(item);
-		display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + size + " " + loc);
+		if (type == "Addon") {
+			display_items->Add(" - £" + wxString::Format("%.2f", price) + " " + name + " " + " " + loc);
+		}
+		else if (size == "") {
+			display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + " " + loc);
+		}
+		else {
+			display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + size + " " + loc);
+		}
 		orderCurrentPrice += price;
 	}
 
@@ -583,6 +570,34 @@ void MainFrame::removeOrder(wxCommandEvent& event) {
 		item_corrected = false;
 		GoHome();
 	}
+}
+
+void MainFrame::SelectItemQuantity(wxCommandEvent& event) {
+
+	std::string num_str = inputQuantity->GetValue().ToStdString();
+	unsigned int num;
+
+	try {
+		int result = stoi(num_str);
+		if (result < 0) {
+			wxMessageBox("Error: Please enter a positive number!");
+			return;
+		}
+		num = result;
+	}
+	catch (const std::invalid_argument& e) {
+		wxMessageBox("Error: Please enter an integer!");
+		return;
+	}
+
+	if (num == 0) {
+		addQuantity = 1;
+	}
+	else {
+		addQuantity = num;
+	}
+
+	inputQuantity->SetLabelText("");
 }
 
 void MainFrame::NumpadButtons(wxCommandEvent& event) {
@@ -675,6 +690,26 @@ void MainFrame::signUserOut(wxCommandEvent& event) {
 	signedInNumber = NULL;
 	signedInRole = "";
 	employee->SetLabel("No staff signed in");
+}
+
+void MainFrame::CheckCash(wxCommandEvent& event) {
+	std::string cash_str = cashLabel->GetLabelText().ToStdString();
+
+	if (cash_str == "£") {
+		wxMessageBox("Please enter cash amount!");
+		return;
+	}
+
+	cash_str.erase(remove(cash_str.begin(), cash_str.end(), '£'), cash_str.end());
+	float cash = std::stof(cash_str);
+
+	if (cash < orderCurrentPrice) {
+		wxMessageBox("Insufficent Cash!", "Warning", wxOK || wxICON_WARNING);
+		return;
+	}
+
+	float change = cash - orderCurrentPrice;
+	wxMessageBox("£" + std::format("{:.2f}", change), "Message", wxOK || wxICON_INFORMATION);
 }
 
 
