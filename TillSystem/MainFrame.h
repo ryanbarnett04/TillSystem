@@ -143,6 +143,10 @@ private:
     // Primary Screen - Receipts
     wxStaticText* receiptsLabel;
 
+    // Primary Screen - Club Card
+    wxStaticText* clubCardText;
+    wxTextCtrl* clubCardInput;
+
     // Order Top Band - Navigation
     wxButton* change_location;
     wxButton* drinks;
@@ -245,6 +249,8 @@ private:
     void signUserOut(wxCommandEvent& evt);
     void SelectItemQuantity(wxCommandEvent& evt);
     void CheckCash(wxCommandEvent& evt);
+    void PayCard(wxCommandEvent& evt);
+    void PayGiftCard(wxCommandEvent& evt);
     void GoHome();
 
     // Num Pad

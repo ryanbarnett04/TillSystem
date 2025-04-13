@@ -230,6 +230,16 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	wxArrayString* wxAS_receipt = new wxArrayString();
 	wxListBox* receipt_box = new wxListBox(primary_screen_page_receipts, wxID_ANY, wxPoint( (screenWidth / 2) - 400, 60), wxSize(500, 600), *wxAS_receipt);
 
+	// Primary Screen - Page 11 - Club Card Screen
+	wxPanel* primary_screen_page_club_card = new wxPanel(primary_screen);
+	clubCardText = new wxStaticText(primary_screen_page_club_card, wxID_ANY, "Present Card", wxPoint((screenWidth/2)-350, (screenHeight/2)-410), wxSize(400, 30));
+	clubCardInput = new wxTextCtrl(primary_screen_page_club_card, wxID_ANY, "", wxPoint((screenWidth/2)-350, (screenHeight/2)-410+40), wxSize(400, 30));
+	clubCardText->SetFont(*new wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+	clubCardText->SetForegroundColour(*new wxColour(255, 255, 255));
+	clubCardInput->SetFont(*new wxFont(16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	clubCardInput->SetForegroundColour(*new wxColour(255, 255, 255));
+
+
 	/*
 		PAGES FOR THE RIGHTHAND
 	*/
@@ -323,6 +333,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	primary_screen->AddPage(primary_screen_page_breakfast_food, "Breakfast Food");
 	primary_screen->AddPage(primary_screen_page_sign_in, "Sign In");
 	primary_screen->AddPage(primary_screen_page_receipts, "Receipts");
+	primary_screen->AddPage(primary_screen_page_club_card, "Club Card");
 
 	righthand->AddPage(righthand_page_empty, "Empty");
 	righthand->AddPage(righthand_page_orderlist, "Order List");
@@ -710,6 +721,14 @@ void MainFrame::CheckCash(wxCommandEvent& event) {
 
 	float change = cash - orderCurrentPrice;
 	wxMessageBox("£" + std::format("{:.2f}", change), "Message", wxOK || wxICON_INFORMATION);
+}
+
+void MainFrame::PayCard(wxCommandEvent& event) {
+	// TODO
+}
+
+void MainFrame::PayGiftCard(wxCommandEvent& event) {
+	// TODO
 }
 
 

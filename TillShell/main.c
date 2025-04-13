@@ -430,7 +430,11 @@ bool executeQuery(const char* query) {
 
 char* showEmployees(const char* query) {
 	char* result = malloc(1024);
-	if (!result) return "Memory allocation failed";
+
+	if (!result) {
+		printf("Memory allocation error!");
+		exit(EXIT_FAILURE);
+	}
 
 	strcpy_s(result, 1024, "NAME | NUMBER | ROLE\n");
 
@@ -444,7 +448,6 @@ char* showEmployees(const char* query) {
 		const char* name = (const char*)sqlite3_column_text(stmt, 1);
 		int number = sqlite3_column_int(stmt, 2);
 		const char* role = (const char*)sqlite3_column_text(stmt, 3);
-
 
 		char row[256];
 		snprintf(row, sizeof(row), "%s | %d | %s\n", name, number, role);
