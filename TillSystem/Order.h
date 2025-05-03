@@ -14,6 +14,7 @@ public:
     std::string printFirst() const;
     int getSize();
     float getItemPrice(int index);
+    float getOrderPrice();
 
 private:
     std::vector<Item> items;

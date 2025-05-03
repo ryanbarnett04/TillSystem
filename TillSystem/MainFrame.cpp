@@ -2,11 +2,11 @@
 #include "Order.h"
 #include "ProductMap.h"
 #include "Database.h"
+#include <format>
 #include <iostream>
 #include <unordered_map>
 #include <tuple>
 #include <optional>
-#include <format>
 
 Database db("database.db");
 
@@ -17,6 +17,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	int screenWidth = screenRect.GetWidth();
 	int screenHeight = screenRect.GetHeight();
 	item_corrected = false;
+
+	wxMessageBox(db.getOpenResult());
 
 	db.executeQuery("CREATE TABLE IF NOT EXISTS employees ("
 		"ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -666,9 +668,18 @@ void MainFrame::signUserIn(wxCommandEvent& event) {
 
 	std::string name = nameField->GetValue().ToStdString();
 	std::string str_number = numberField->GetValue().ToStdString();
+	int number;
 
 	if (name != "" && str_number != "") {
-		int number = std::stoi(str_number);
+
+		try {
+			number = std::stoi(str_number);
+		}
+		catch (const std::invalid_argument& ia) {
+			wxMessageBox("Employee number must only contain digits!");
+			return;
+		}
+
 		auto [eName, eNumber, eRole] = db.fetchUser(name, number);
 
 		if (eName != "") {
@@ -719,8 +730,13 @@ void MainFrame::CheckCash(wxCommandEvent& event) {
 		return;
 	}
 
+	if (cash == orderCurrentPrice) {
+		wxMessageBox("Payment Accepted!", "Warning", wxOK || wxICON_WARNING);
+		return;
+	}
+
 	float change = cash - orderCurrentPrice;
-	wxMessageBox("£" + std::format("{:.2f}", change), "Message", wxOK || wxICON_INFORMATION);
+	wxMessageBox("Payment Accepted - Change: £" + std::format("{:.2f}", change), "Message", wxOK || wxICON_INFORMATION);
 }
 
 void MainFrame::PayCard(wxCommandEvent& event) {

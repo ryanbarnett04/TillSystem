@@ -9,4 +9,3 @@ public:
 	bool OnInit();
 
 };
-

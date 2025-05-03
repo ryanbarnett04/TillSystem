@@ -14,6 +14,7 @@ public:
 	std::string fetchUsers();
 	std::string fetchProducts();
 	std::tuple<std::string, int, std::string> fetchUser(const std::string& name, int number);
+	std::string getOpenResult();
 
 private:
 	sqlite3* db;

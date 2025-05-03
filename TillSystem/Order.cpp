@@ -46,3 +46,11 @@ int Order::getSize() {
 float Order::getItemPrice(int index) {
     return items[index].getPrice();
 }
+
+float Order::getOrderPrice() {
+    float amount = 0;
+    for (const Item& item : items) {
+        amount += item.getPrice();
+    }
+    return amount;
+}

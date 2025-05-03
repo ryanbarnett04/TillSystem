@@ -14,7 +14,6 @@ Database::~Database() {
 	sqlite3_close(db);
 }
 
-
 // Execute a SQL query
 bool Database::executeQuery(const std::string& query) {
 	char* errorMessage;
@@ -80,4 +79,8 @@ std::tuple<std::string, int, std::string> Database::fetchUser(const std::string&
     // Clean up
     sqlite3_finalize(stmt);
     return result;
+}
+
+std::string Database::getOpenResult() {
+    return open_result;
 }
