@@ -3,10 +3,10 @@
 
 // Constructor implementation
 
-Item::Item() : name(""), price(0.0f), type("") {}
+Item::Item() : name(""), price(0.0f), type(Type::NULL_RETURN) {}
 
-Item::Item(const std::string& itemName, float itemPrice, const std::string& itemType)
-    : name(itemName), price(itemPrice), type(itemType) {}
+Item::Item(const std::string& itemName, float itemPrice, const Type itemType, const Size itemSize)
+    : name(itemName), price(itemPrice), type(itemType), size(itemSize) {}
 
 // Setters
 void Item::setName(const std::string& itemName) {
@@ -17,11 +17,11 @@ void Item::setPrice(float itemPrice) {
     price = itemPrice;
 }
 
-void Item::setType(const std::string& itemType) {
+void Item::setType(const Type itemType) {
     type = itemType;
 }
 
-void Item::setSize(const std::string& itemSize) {
+void Item::setSize(const Size itemSize) {
     size = itemSize;
 }
 
@@ -34,20 +34,20 @@ float Item::getPrice() const {
     return price;
 }
 
-std::string Item::getType() const {
+Type Item::getType() const {
     return type;
 }
 
-std::string Item::getSize() const {
+Size Item::getSize() const {
     return size;
 }
 
 // Display method
 void Item::display() const {
-    if (type == "Drink") {
+    if (type == Type::Drink) {
         std::cout << "Name: " << name
             << ", Price: £" << price
-            << ", Size: " << size
+            << ", Size: " << ProductMap::sizeToString(size)
             << std::endl;
     }
     else {
@@ -59,10 +59,10 @@ void Item::display() const {
 
 std::string Item::toString() const {
     std::string result;
-    if (size != "") {
+    if (size != Size::NA) {
         result = "Name: " + name +
             ", Price: £" + std::to_string(price) +
-            ", Size: " + size;
+            ", Size: " + ProductMap::sizeToString(size);
     }
     else {
         result = "Name: " + name +

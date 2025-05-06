@@ -1,25 +1,26 @@
 #pragma once
 
 #include <string>
+#include "ProductMap.h"
 
 class Item {
 public:
 
     // Constructor
     Item();
-    Item(const std::string& itemName, float itemPrice, const std::string& itemType);
+    Item(const std::string& itemName, float itemPrice, Type itemType, Size itemSize);
 
     // Setters
     void setName(const std::string& itemName);
-    void setPrice(float itemPrice);
-    void setType(const std::string& itemType);
-    void setSize(const std::string& itemSize);
+    void setPrice(const float itemPrice);
+    void setType(const Type itemType);
+    void setSize(const Size itemSize);
 
     // Getters
     std::string getName() const;
     float getPrice() const;
-    std::string getType() const;
-    std::string getSize() const;
+    Type getType() const;
+    Size getSize() const;
 
     // Utility
     void display() const;
@@ -28,6 +29,6 @@ public:
 private:
     std::string name;
     float price;
-    std::string type;
-    std::string size;
+    Type type;
+    Size size;
 };
