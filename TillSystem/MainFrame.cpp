@@ -1,12 +1,4 @@
 #include "MainFrame.h"
-#include "Order.h"
-#include "ProductMap.h"
-#include "Database.h"
-#include <format>
-#include <iostream>
-#include <unordered_map>
-#include <tuple>
-#include <optional>
 
 Database db("database.db");
 
@@ -516,12 +508,8 @@ void MainFrame::addToOrder(wxCommandEvent& event) {
 	}
 
 	int buttonID = event.GetId();
-	auto [name, price, type, size] = ProductMap::getProduct(buttonID);
-	Item item(name, price, type);
-
-	if (size != "") {
-		item.setSize(size);
-	}
+	auto [name, price, type, size] = productMap.getProduct(buttonID);
+	Item item(name, price, type, size);
 
 	recentItem = item;
 
@@ -533,20 +521,19 @@ void MainFrame::addToOrder(wxCommandEvent& event) {
 
 	for (int i = 0; i < addQuantity; i++) {
 		order.addItem(item);
-		if (type == "Addon") {
+		if (type == Type::Addon) {
 			display_items->Add(" - £" + wxString::Format("%.2f", price) + " " + name + " " + " " + loc);
 		}
-		else if (size == "") {
+		else if (size == Size::NA) {
 			display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + " " + loc);
 		}
 		else {
-			display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + size + " " + loc);
+			display_items->Add("£" + wxString::Format("%.2f", price) + " " + name + " " + ProductMap::sizeToString(size) + " " + loc);
 		}
-		orderCurrentPrice += price;
 	}
 
 	listbox->Set(*display_items);
-	currentPriceLabel->SetLabelText("£" + std::format("{:.2f}", orderCurrentPrice));
+	currentPriceLabel->SetLabelText("£" + std::format("{:.2f}", order.getOrderPrice()));
 
 	if (item_corrected == true) {
 		item_corrected = false;
@@ -559,8 +546,7 @@ void MainFrame::removeItem(wxCommandEvent& event) {
 
 	if (item_corrected == false) {
 		order.removeRecent();
-		orderCurrentPrice -= recentItem.getPrice();
-		currentPriceLabel->SetLabelText("£" + std::format("{:.2f}", orderCurrentPrice));
+		currentPriceLabel->SetLabelText("£" + std::format("{:.2f}", order.getOrderPrice()));
 
 		if (!display_items->IsEmpty()) {
 			display_items->pop_back();
@@ -575,8 +561,7 @@ void MainFrame::removeOrder(wxCommandEvent& event) {
 
 	if (signedInRole != "Barista") {
 		order.clearOrder();
-		orderCurrentPrice = NULL;
-		currentPriceLabel->SetLabelText("£" + std::format("{:.2f}", orderCurrentPrice));
+		currentPriceLabel->SetLabelText("£" + std::format("{:.2f}", order.getOrderPrice()));
 		inputQuantity->SetLabelText("");
 		display_items->clear();
 		listbox->Set(*display_items);
@@ -725,17 +710,17 @@ void MainFrame::CheckCash(wxCommandEvent& event) {
 	cash_str.erase(remove(cash_str.begin(), cash_str.end(), '£'), cash_str.end());
 	float cash = std::stof(cash_str);
 
-	if (cash < orderCurrentPrice) {
+	if (cash < order.getOrderPrice()) {
 		wxMessageBox("Insufficent Cash!", "Warning", wxOK || wxICON_WARNING);
 		return;
 	}
 
-	if (cash == orderCurrentPrice) {
+	if (cash == order.getOrderPrice()) {
 		wxMessageBox("Payment Accepted!", "Warning", wxOK || wxICON_WARNING);
 		return;
 	}
 
-	float change = cash - orderCurrentPrice;
+	float change = cash - order.getOrderPrice();
 	wxMessageBox("Payment Accepted - Change: £" + std::format("{:.2f}", change), "Message", wxOK || wxICON_INFORMATION);
 }
 

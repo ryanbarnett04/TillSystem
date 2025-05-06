@@ -4,6 +4,12 @@
 #include <wx/simplebook.h>
 #include <wx/display.h>
 #include "Order.h"
+#include "ProductMap.h"
+#include "Database.h"
+#include <format>
+#include <iostream>
+#include <tuple>
+#include <optional>
 
 class MainFrame : public wxFrame
 {
@@ -21,10 +27,10 @@ private:
     std::string signedInName;
     int signedInNumber;
     std::string signedInRole;
-    float orderCurrentPrice = NULL;
     Item recentItem;
     int addQuantity = 1;
     bool onPaymentScreen = false;
+    ProductMap productMap;
 
     // Simple books
     wxSimplebook* order_top_band;
