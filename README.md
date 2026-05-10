@@ -1,7 +1,6 @@
 # TillSystem
 
 - This project is a simple POS / Till system made to emulate what you might find in a cafe / coffee shop
-- This is a beginners project, i know the code sucks.
 - Solution consists of two components, the 'Till System' and 'Till Shell'
 
 ## Till System
